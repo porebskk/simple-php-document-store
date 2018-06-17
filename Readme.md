@@ -75,6 +75,13 @@ $query->whereAnd(
 $dbalAdapter->update($documentId, $updatedDocument);
 ```
 
+### Limit the amount of returned documents
+```php
+$query = (new Query())->limit(5);
+
+$maximalOf5Documents = $dbalAdapter->searchByQuery($query);
+```
+
 ### Advanced Usage
 Storing documents with array data and querying them:
 ```php
