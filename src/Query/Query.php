@@ -8,6 +8,8 @@ class Query
 {
     /** @var AndStatement */
     private $rootAndStatement;
+    /** @var int|null */
+    private $maxDocumentCount;
 
     public function __construct()
     {
@@ -29,5 +31,21 @@ class Query
     public function getRootAnd()
     {
         return $this->rootAndStatement;
+    }
+
+    public function limit(int $maxDocumentCount)
+    {
+        $this->maxDocumentCount = $maxDocumentCount;
+
+        return $this;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @return int|null
+     */
+    public function getMaxDocumentCount(): ?int
+    {
+        return $this->maxDocumentCount;
     }
 }

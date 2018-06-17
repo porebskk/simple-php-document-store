@@ -3,10 +3,10 @@
 namespace SimplePhpDocumentStore\Store\Adapter;
 
 use Doctrine\DBAL\DriverManager;
+use PHPUnit\Framework\TestCase;
 use SimplePhpDocumentStore\Query\Query;
 use SimplePhpDocumentStore\Query\Statement\OrStatement;
 use SimplePhpDocumentStore\Query\Statement\WhereStatement;
-use PHPUnit\Framework\TestCase;
 
 class DbalAdapterTest extends TestCase
 {
@@ -91,11 +91,24 @@ class DbalAdapterTest extends TestCase
         $this->assertNull($result1);
 
         $document = [
-            'test' => 'hello'
+            'test' => 'hello',
         ];
         $id = $this->dbalAdapter->store($document);
 
         $result2 = $this->dbalAdapter->searchById($id);
         $this->assertSame($document, $result2);
+    }
+
+    public function testLimitResults()
+    {
+        for ($i = 20; $i > 0; $i--) {
+            $document = [
+                'test' => $i,
+            ];
+            $this->dbalAdapter->store($document);
+        }
+
+        $documents = $this->dbalAdapter->searchByQuery((new Query())->limit(5));
+        $this->assertCount(5, $documents);
     }
 }

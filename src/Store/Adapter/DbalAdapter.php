@@ -7,13 +7,13 @@ use Doctrine\DBAL\Query\Expression\ExpressionBuilder;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Schema\Table;
 use Exception;
+use Ramsey\Uuid\Uuid;
 use SimplePhpDocumentStore\Query\Query;
 use SimplePhpDocumentStore\Query\Statement\AndStatement;
 use SimplePhpDocumentStore\Query\Statement\OrStatement;
 use SimplePhpDocumentStore\Query\Statement\WhereStatement;
 use SimplePhpDocumentStore\Store\ArrayPathGenerator;
 use SimplePhpDocumentStore\Store\StoreInterface;
-use Ramsey\Uuid\Uuid;
 
 class DbalAdapter implements StoreInterface
 {
@@ -97,9 +97,15 @@ class DbalAdapter implements StoreInterface
         $queryBuilder->innerJoin('dataTable', self::TABLE_NAME_DOCUMENT_PATH, 'pathTable', 'dataTable.id = pathTable.data_id');
 
         $rootAndStatement = $this->transformStoreStatementToQueryBuilderStatements($queryBuilder, $andStatement, $queryBuilder->expr());
-        $queryBuilder->where($rootAndStatement);
+        if ($rootAndStatement) {
+            $queryBuilder->where($rootAndStatement);
+        }
 
         $queryBuilder->groupBy('dataTable.id');
+
+        if (is_numeric($query->getMaxDocumentCount())) {
+            $queryBuilder->setMaxResults($query->getMaxDocumentCount());
+        }
 
         $result = $queryBuilder->execute()
                                ->fetchAll();
