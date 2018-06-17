@@ -86,4 +86,35 @@ class ArrayPathGeneratorTest extends TestCase
             next($expectedData);
         }
     }
+
+    public function testExampleFromReadme()
+    {
+        $array = [
+            'friends' => [
+                ['person' => ['name' => 'Bob', 'age' => 26]],
+                ['person' => ['name' => 'Alice', 'age' => 25]],
+            ],
+        ];
+
+
+        $generatedData = $this->generator->generate($array);
+
+        $expectedData = [
+            ['friends.person.name' => 'Bob'],
+            ['friends.person.age' => 26],
+            ['friends.person.name' => 'Alice'],
+            ['friends.person.age' => 25],
+        ];
+        reset($expectedData);
+        foreach ($generatedData as $path => $value) {
+            $expectedPair = current($expectedData);
+            reset($expectedPair);
+            $expectedKey = key($expectedPair);
+            $expectedValue = current($expectedPair);
+
+            $this->assertSame($expectedKey, $path);
+            $this->assertSame($expectedValue, $value);
+            next($expectedData);
+        }
+    }
 }

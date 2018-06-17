@@ -15,6 +15,7 @@ values).
 ### Initialization
 ```php
 //Setting up the DbalAdapter, we are using here Sqlite in memory mode
+//requires the sqlite extension to be enabled in the used php.ini file
 $connectionParams = ['url' => 'sqlite:///:memory:'];
 $conn = DriverManager::getConnection($connectionParams);
 $conn->exec('PRAGMA foreign_keys = ON');
@@ -46,6 +47,8 @@ $document = $dbalAdapter->searchById($documentId);
 ```php
 $query = new Query();
 //Finding document where the JSON Path "person.head.eyes" is either red or orange
+//Allowed operators depend on the adapter implementation
+//for DBAL see the ExpressionBuilder::* constants
 $query->whereAnd(
     (new OrStatement())->add(
         new WhereStatement('person.head.eyes', '=', 'red'),
@@ -70,4 +73,31 @@ $query->whereAnd(
 ### Updating a document
 ```php
 $dbalAdapter->update($documentId, $updatedDocument);
+```
+
+### Advanced Usage
+Storing documents with array data and querying them:
+```php
+$document = [
+    'friends' => [
+        ['person' => ['name' => 'Bob', 'age' => 26]],
+        ['person' => ['name' => 'Alice', 'age' => 25]],
+    ],
+];
+
+$dbalAdapter->store($document);
+
+//Following paths will be extracted from the array:
+//'friends.person.name' => 'Bob',
+//'friends.person.age' => 26
+//'friends.person.name' => 'Alice'
+//'friends.person.age' => 25
+
+//Now we query the data
+$query = new Query();
+$query->whereAnd(
+    new WhereStatement('friends.person.age', '<', '30')
+);
+
+$documents = $dbalAdapter->searchByQuery($query);
 ```
