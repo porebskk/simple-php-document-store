@@ -1,7 +1,7 @@
 # SimplePhpDocumentStore
-SimplePhpDocumentStore is a simple document store (fancy word for php arrays) that is running 
-sql under the hood. It also provides a query component using paths extracted from the document. 
-The querying part is solved by doing extra lifting when the
+SimplePhpDocumentStore is a simple document store (fancy words for storing php arrays) that is 
+running sql under the hood. It also provides a query component using paths extracted from the
+document. The querying part is solved by doing extra lifting when the
 documents are stored in the database (storing all unique paths as separate
 values).
 
@@ -80,7 +80,7 @@ $dbalAdapter->update($documentId, $updatedDocument);
 ```php
 $query = (new Query())->limit(5);
 
-$maximalOf5Documents = $dbalAdapter->searchByQuery($query);
+$maximumOf5Documents = $dbalAdapter->searchByQuery($query);
 ```
 
 ### Advanced Usage
