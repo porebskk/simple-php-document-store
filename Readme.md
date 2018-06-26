@@ -1,11 +1,12 @@
 # SimplePhpDocumentStore
-SimplePhpDocumentStore is a simple NoSQL database for storing php arrays and
-querying them. The Querying part is solved by doing extra lifting when the
+SimplePhpDocumentStore is a simple document store (fancy word for php arrays) that is running 
+sql under the hood. It also provides a query component using paths extracted from the document. 
+The querying part is solved by doing extra lifting when the
 documents are stored in the database (storing all unique paths as separate
 values).
 
 ## Installation
-`composer install porebskk/simple-php-document-store`
+`composer require porebskk/simple-php-document-store`
 
 ## Features
 * A variety of database platforms are supported via [DBAL](https://www.doctrine-project.org/projects/doctrine-dbal/en/2.7/reference/platforms.html#platforms)
